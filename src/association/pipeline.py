@@ -1,5 +1,5 @@
 import os
-from .association import association, feature_extraction, utils
+from association import association, feature_extraction, utils
 
 project_dir = os.path.dirname(os.getcwd())
 cfg = utils.get_config(project_dir)

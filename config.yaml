@@ -2,8 +2,13 @@ audio: true
 real_world: true
 
 base_conf:
-  data_path: raw_data
-  mtcnn_path: mtcnn
+  data_parent_path: data
+  audio_real_world: audio_real_world
+  video_real_world: video_real_world
+  # 50vs20_100 stands for number of victims(50), OOS(out-of-set: 20) and sessions(100).
+  audio_simulation: audio_50vs20_100
+  video_simulation: video_50vs20_100
+  video_simulation_raw: video_50vs20_100_gpu
 
 specs:
   set_gpu: True

@@ -1,0 +1,23 @@
+wlan_name: "mywifi"
+
+raw_video_folder: "raw/"
+dated_video_folder: "video/"
+wifi_data_folder: "wifi/"
+audio_folder: "audio/"
+
+V_FILE_BUFFER: 1048576
+V_REC_SECONDS: 10
+V_REC_BITRATE: 1000000
+V_MOTION_MAGNITUDE: 70
+V_MOTION_VECTORS: 10
+V_RESOLUTION:
+        - 1640
+        - 1232
+V_FRAMERATE: 30
+V_ROTATION: 180
+
+A_CHANNELS: 1
+A_RATE: 32000
+A_FRAME_DURATION: 30
+A_PADDING_DURATION: 300
+
