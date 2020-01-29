@@ -29,6 +29,11 @@ The `requirements.txt` specifies all dependencies. Use the following command to 
 If you find this repository and our data useful, please cite our paper.
 
 ```
-Stay tuned!
+@inproceedings{lu2020nowhere,
+  title={{Nowhere to Hide: Cross-modal Identity Leakage between Biometrics and Devices}},
+  author={Lu, Chris Xiaoxuan and Li Yang, Xiangli Yuanbo and Li Zhengxiong},
+  booktitle={The World Wide Web Conference},
+  year={2020}
+}
 ```
 
