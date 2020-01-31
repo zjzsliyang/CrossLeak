@@ -1,5 +1,4 @@
 # RPi
-## What I have done:
 
 ### piaudio.py
 This records audio input from external microphone to a circular buffer, while simultaneously analysing the audio to [detect voice activity](https://github.com/wiseman/py-webrtcvad). When voice activity is detected audio is saved to a wav file, with date and time when voice activity began as the file name in the format '%Y_%m_%d_%H_%M_%S.%f'.
