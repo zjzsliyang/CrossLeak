@@ -18,7 +18,7 @@ The `requirements.txt` specifies all dependencies. Use the following command to 
 
 ### Front-End
 
-[README](src/eavesdropping/README.md)
+Check out how to set up the multi-modal sensing frond-end in this [README](src/eavesdropping/README.md)
 
 ### Back-End
 
