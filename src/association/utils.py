@@ -17,11 +17,18 @@ def warn_with_traceback(message, category, filename, lineno, file=None, line=Non
 
 def get_config(project_dir: str):
     with open(os.path.join(project_dir, 'config.yaml'), 'r') as f:
-        cfg = yaml.load(f)
+        cfg = yaml.safe_load(f)
     return cfg
 
 
-def get_parent_folder_name(direction: str, num=2):
+def get_dataset(real_world: bool, bio_type: str) -> str:
+    if real_world:
+        return bio_type + '_real_world'
+    else:
+        return bio_type + '_simulation'
+
+
+def get_parent_folder_name(direction: str, num=2) -> str:
     for i in range(num):
         path = os.path.split(direction)
         direction = path[0]
@@ -47,7 +54,7 @@ def get_format_subfile(root_path: str, piles_num: int, pattern: str):
     return paths
 
 
-def get_meeting_and_path(path: str, pattern: str):
+def get_meeting_and_path(path: str, pattern: str) -> {str: str}:
     paths = get_format_subfile(path, 2, pattern)
     result = {}
     for path in paths:
@@ -55,48 +62,33 @@ def get_meeting_and_path(path: str, pattern: str):
     return result
 
 
-# TODO: fix ad-hoc function
-def get_meeting_poi_name(path: str, real_world: bool, thres=''):
-    if real_world:
-        # real world dataset store POI name in png
-        wifi_paths = get_format_subfile(path, 2, r'.+' + re.escape(str(thres)) + r'.+\.png$')
-        result = collections.defaultdict(set)
-        for wifi_path in wifi_paths:
-            name = get_parent_folder_name(wifi_path, 1)
-            meeting = get_parent_folder_name(wifi_path, 2)
-            # split by _ or . to get the people name
-            for peo in re.split('[_.]', name)[1:-1]:
-                if peo is not '':
-                    result[meeting].add(peo)
-        new_res = {}
-        for meeting, peos in result.items():
-            new_res[meeting] = list(peos)
-        return new_res
-    else:
-        # fake dataset store POI name in txt
-        wifi_paths = get_format_subfile(path, 2, r'.+\.txt')
-        result = {}
-        for wifi_path in wifi_paths:
+def get_meeting_people_name(path: str, real_world: bool, pattern: str, thres: int) -> {str: [str]}:
+    wifi_paths = get_format_subfile(path, 2, pattern)
+    result = collections.defaultdict(set)
+    for wifi_path in wifi_paths:
+        rssi_info = pickle.load(open(wifi_path, 'rb'))
+        for peo, rssi in rssi_info.items():
+            if abs(min(rssi, key=abs)) < abs(thres):
+                result[get_parent_folder_name(wifi_path, 2)].add(peo)
+    new_res = {}
+    for meeting, peos in result.items():
+        new_res[meeting] = list(peos)
+    return new_res
+
+
+def get_meeting_all_people_mac(path: str, thres: int):
+    # real world dataset store all mac address with thres rssi in csv
+    wifi_paths = get_format_subfile(path, 2, r'.+\.csv')
+    result = {}
+    for wifi_path in wifi_paths:
+        if str(thres) + '.csv' in wifi_path:
             people_name = open(wifi_path, 'r').read()
             meeting = get_parent_folder_name(wifi_path, 2)
-            result[meeting] = people_name.split('_')
-        return result
-
-
-def get_meeting_all_people_mac(path: str, real_world: bool, thres=''):
-    if real_world:
-        # real world dataset store all mac address with thres rssi in csv
-        wifi_paths = get_format_subfile(path, 2, r'.+\.csv')
-        result = {}
-        for wifi_path in wifi_paths:
-            if str(thres) + '.csv' in wifi_path:
-                people_name = open(wifi_path, 'r').read()
-                meeting = get_parent_folder_name(wifi_path, 2)
-                if thres == '':
-                    result[meeting] = re.split(', ', people_name)
-                else:
-                    result[meeting] = re.split('[_.]', people_name)
-        return result
+            if thres == '':
+                result[meeting] = re.split(', ', people_name)
+            else:
+                result[meeting] = re.split('[_.]', people_name)
+    return result
 
 
 def get_meeting_poi_num(path: str, real_world: bool, thres=''):
@@ -127,15 +119,15 @@ def parse(tree, p, all_paths):
     return all_paths
 
 
-def load_true_label(audio: bool, project_dir: str):
+def load_true_label(audio: bool, real_world: bool, bio_data_path: str) -> {str: str}:
     # load audio / video true label
-    if audio:
+    if audio and real_world:
         true_label = {}
         # count for error
         dia_err = 0
         dia_segs = []
-        list_pth = os.path.join(project_dir, 'middle_data', 'list.txt')
-        gt_dir = os.path.join(project_dir, 'dia_groundtruth')
+        list_pth = os.path.join(bio_data_path, 'middle_data', 'list.txt')
+        gt_dir = os.path.join(bio_data_path, 'dia_groundtruth')
         with open(list_pth, 'r') as f:
             lines = f.readlines()
             for line in lines:
@@ -157,7 +149,7 @@ def load_true_label(audio: bool, project_dir: str):
                         for inx in range(len(lines) - 1):
                             gt_timestamps.append(lines[inx + 1].split(',')[1])
                             gt_speakers.append(lines[inx].split(',')[2])
-                        true_label[meeting]['timestamp']= gt_timestamps
+                        true_label[meeting]['timestamp'] = gt_timestamps
                         true_label[meeting]['speaker'] = gt_speakers
                     for t in gt_timestamps:
                         if len(t) > 0:
@@ -168,7 +160,7 @@ def load_true_label(audio: bool, project_dir: str):
                                     dia_err += 1
             logging.info('dia error = %d' % dia_err)
     else:
-        with open(os.path.join(project_dir, 'middle_data', 'true_label.pk'), 'rb') as f:
+        with open(os.path.join(bio_data_path, 'true_label.pk'), 'rb') as f:
             true_label = pickle.load(f)
         true_cnt = {}
         for item, peo in true_label.items():

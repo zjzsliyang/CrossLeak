@@ -1,39 +1,48 @@
 audio: true
-real_world: true
+real_world: false
+logging_level: DEBUG
 
 base_conf:
-  data_parent_path: data
-  audio_real_world: audio_real_world
-  video_real_world: video_real_world
-  # 50vs20_100 stands for number of victims(50), OOS(out-of-set: 20) and sessions(100).
-  audio_simulation: audio_50vs20_100
-  video_simulation: video_50vs20_100
-  video_simulation_raw: video_50vs20_100_gpu
+  dataset:
+    audio_real_world: audio_real_world
+    video_real_world: video_real_world
+    # 50vs20_100 stands for number of victims(50), OOS(out-of-set: 20) and sessions(100).
+    audio_simulation: audio_50vs20_100
+    video_simulation: video_50vs20_100
+    video_simulation_raw: video_50vs20_100_gpu
+  wifi_data: wifi_data
+  biometric_data: bio_data
 
 specs:
-  set_gpu: True
+  set_gpu: False
   gpu_num: 2
 
 pre_process:
-  dimension: 512
-  model_name: 20180402-114759.pb
-  piece_num: 1000
+  video:
+    dimension: 512
+    model_name: 20180402-114759.pb
+    piece_num: 1000
+  audio:
+    dimension: 200
 
 parameters:
   # video real world only have wifi data in -55 rssi
-  wifi_threshold: -55
+  # audio simulation: -35
+  wifi_threshold: -35
   # meeting thres -1 for all meetings
   meeting_threshold: -1
   # metric of distance in SCAN: dice or euclidean
   cdist_metric: dice
   # estimated number of victims (k)
   # audio: 23, video: 32, not real world = 50
-  estimated_victims: 23
+  estimated_victims: 50
   # regularization parameter: balance the biometric feature similarity and session attendance similarity
   omega: 0.5
 
 filter_people:
   video:
+    - someone
+  audio:
     - someone
 
 mac_name:

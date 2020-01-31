@@ -22,7 +22,7 @@ The `requirements.txt` specifies all dependencies. Use the following command to 
 
 [README](src/eavesdropping/README.md)
 
-### Back End
+### Back-End
 
 `python3 src/association/pipeline.py`
 
