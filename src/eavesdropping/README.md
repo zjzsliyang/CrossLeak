@@ -83,11 +83,6 @@ pip3 install webrtcvad
 ```
 pip3 install pyyaml
 ```
-### Things to do:
-- Filter out router packets
-
-## Things I had to do to make it work on Kali:
-I've been running this on [Kali for RPi](https://www.offensive-security.com/kali-linux-arm-images/) (choosing "Kali Linux RaspberryPi 2 and 3") because TShark seems to work slightly better on Kali. This means that a lot of the things I had to do will not be necessary on Raspbian as they come by default.
 
 ### To use the RPi camera and picamera module in python:
 - Downloaded [Re4son-Pi-Kernel](https://re4son-kernel.com/re4son-pi-kernel/)
