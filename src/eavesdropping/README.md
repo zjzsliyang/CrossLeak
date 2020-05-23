@@ -136,4 +136,4 @@ pip3 install pyyaml
 ```
 
 ## Acknowledgements
-This code heavily builds on this [repo.](https://github.com/e-shere/RPi).
+This code heavily builds on the [repository](https://github.com/e-shere/RPi) developed by Elizaveta Sheremetyeva.
