@@ -32,7 +32,7 @@ If you find this repository useful, please cite our paper.
 @inproceedings{lu2020nowhere,
   title={{Nowhere to Hide: Cross-modal Identity Leakage between Biometrics and Devices}},
   author={Lu, Chris Xiaoxuan and Li Yang, Xiangli Yuanbo and Li Zhengxiong},
-  booktitle={The World Wide Web Conference},
+  booktitle={The Web Conference (WWW)},
   year={2020}
 }
 ```
